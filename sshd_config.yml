@@ -1,0 +1,19 @@
+---
+- hosts: host1
+  tasks:
+    - name: replace ssh port no 22 to 2222
+      lineinfile: dest=/etc/ssh/sshd_config
+        line={{ item.line }}
+        insertafter={{ item.insertafter }}
+
+      with_items:
+        - { line: "#Port 22", insertafter: "Port 22" }
+        - { line: "Port 22", insertafter: "Port 22" }
+        - { line: "port 22", insertafter: "Port 22" }
+
+      notify: reload sshd
+
+  handlers: 
+    - name: reload sshd
+      service: name=sshd state=restarted
+
